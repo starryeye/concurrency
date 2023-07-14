@@ -39,9 +39,7 @@ public class Stock {
      * - @Transactional 어노테이션을 제거 해야한다.
      * (JPA 쓰기 지연은 메서드 종료후 수행되므로 제거 하지 않으면 메서드 종료 시점과 쓰기지연 시점 사이에 동시성 문제가 발생한다.)
      * - @Transactional 어노테이션이 제거 되었기 때문에 쓰기 지연이 동작하지 못하므로 stockRepository.saveAndFlush(stock); 를 추가해야한다.
-     *
-     * 참고
-     * - synchronized 키워드는 단일 JVM 에서만 동작하므로 분산 환경에서는 여전히 동시성 문제가 발생한다.
+     * -> StockServiceWithSynchronized 에 구현
      */
     public synchronized void decrease(Long quantity) {
 
