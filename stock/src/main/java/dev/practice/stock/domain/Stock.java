@@ -34,7 +34,7 @@ public class Stock {
      * - 하지만, synchronized 키워드는 decrease 메서드에 적용되어 있으므로..
      * - decrease 메서드 종료와 decreaseStock 메서드 종료 시점 사이의 찰나의 순간에 동시성 문제가 생겨버린다.
      */
-    public synchronized void decrease(Long quantity) {
+    public void decrease(Long quantity) {
 
         if(this.quantity - quantity < 0)
             throw new IllegalArgumentException("재고가 부족합니다.");
