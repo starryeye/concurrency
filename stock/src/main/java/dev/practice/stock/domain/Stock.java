@@ -21,7 +21,7 @@ public class Stock {
     private Long quantity;
 
     @Builder
-    public Stock(Long id, Long productId, Long quantity) {
+    public Stock(Long productId, Long quantity) {
         this.id = null;
         this.productId = productId;
         this.quantity = quantity;

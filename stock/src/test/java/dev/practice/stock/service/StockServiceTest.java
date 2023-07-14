@@ -37,6 +37,8 @@ class StockServiceTest {
         stockRepository.save(stock);
 
         testId = stock.getId();
+
+        System.out.println("testId = " + testId);
     }
 
     // 기능 테스트
