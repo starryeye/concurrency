@@ -20,6 +20,7 @@ public class StockFacadeWithLettuceLock {
     public void decreaseStock(Long id, Long quantity) {
 
         // 스핀 락 방식
+        // redis 의 부하를 줄이기 위해 sleep 을 넣었다.
         while(!redisLockRepository.getLock(id)) {
             System.out.println("lock 획득 실패, 0.1 초 대기");
             try {

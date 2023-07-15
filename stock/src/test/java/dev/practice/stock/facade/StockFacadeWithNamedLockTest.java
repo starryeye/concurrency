@@ -1,15 +1,12 @@
 package dev.practice.stock.facade;
 
 import dev.practice.stock.domain.Stock;
-import dev.practice.stock.domain.StockWithVersion;
 import dev.practice.stock.repository.StockRepository;
-import dev.practice.stock.repository.StockRepositoryWithOptimisticLock;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +32,7 @@ class StockFacadeWithNamedLockTest {
                 .productId(1L)
                 .quantity(100L)
                 .build();
-        
+
         stockRepository.save(stock);
         testId = stock.getId();
 

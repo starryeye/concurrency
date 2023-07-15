@@ -24,6 +24,10 @@ public class RedisLockRepository {
      * 참고
      * - spin lock 은 락 획득을 하고싶은 스레드가 반복적으로 락을 획득할 수 있는지 확인을 하는 방식이다.
      * - redis 에 지속적인 락 획득 가능 여부를 확인하기 때문에 redis 에 부하를 줄 수 있다.
+     *
+     * 실무에서는..
+     * 재시도 필요 없으면 Lettuce client 사용
+     * 재시도 필요하면 redlock 을 구현한 Redisson client 사용
      */
 
     private final StringRedisTemplate stringRedisTemplate;

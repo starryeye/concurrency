@@ -2,7 +2,6 @@ package dev.practice.stock.facade;
 
 import dev.practice.stock.domain.StockWithVersion;
 import dev.practice.stock.repository.StockRepositoryWithOptimisticLock;
-import dev.practice.stock.service.StockServiceWithOptimisticLock;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -27,6 +27,11 @@ public class StockFacadeWithRedissonLock {
     private final RedissonClient redissonClient;
     private final StockService stockService;
 
+    /**
+     * lock 은 redis redisson client 를 사용하여 분산 락
+     * 실제 데이터는 mysql 에서 처리
+     */
+
     public void decreaseStock(Long id, Long quantity) {
 
         RLock lock = redissonClient.getLock(generateKey(id));
