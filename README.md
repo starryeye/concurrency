@@ -7,7 +7,7 @@
   - synchronized
   - pessimistic lock
   - optimistic lock
-  - named lock
+  - mysql get_lock, release_lock 명령어를 활용한 named lock
   - redis lettuce client, setnx 명령어를 활용한 분산 스핀락
   - redis redisson client, pub/sub 기능을 활용한 분산락
 
