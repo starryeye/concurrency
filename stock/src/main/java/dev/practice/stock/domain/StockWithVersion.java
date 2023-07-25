@@ -22,10 +22,8 @@ public class StockWithVersion {
 
     @Builder
     public StockWithVersion(Long productId, Long quantity) {
-        this.id = null;
         this.productId = productId;
         this.quantity = quantity;
-        this.version = 0L;
     }
 
     /**

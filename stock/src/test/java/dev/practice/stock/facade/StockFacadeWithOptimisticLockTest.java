@@ -34,17 +34,9 @@ class StockFacadeWithOptimisticLockTest {
                 .quantity(100L)
                 .build();
 
-        /**
-         * 아래 주석 이해가 안됨..
-         * StockServiceTest 에서는 아래 코드로 테스트를 진행했는데
-         * stock 에 save 호출 후 id 가 담겼는데...
-         * 아래 코드에서는 save 호출 후 id 가 담기지 않음.. null 임...
-         */
-//        stockRepositoryWithOptimisticLock.save(stockWithVersion);
-//        testId = stockWithVersion.getId();
+        stockRepositoryWithOptimisticLock.save(stockWithVersion);
+        testId = stockWithVersion.getId();
 
-        StockWithVersion savedStockWithVersion = stockRepositoryWithOptimisticLock.save(stockWithVersion);
-        testId = savedStockWithVersion.getId();
 
         System.out.println("testId = " + testId);
     }
