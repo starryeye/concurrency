@@ -3,7 +3,7 @@ package dev.practice.stock.service;
 import dev.practice.stock.domain.Stock;
 import dev.practice.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -24,45 +25,50 @@ class StockServiceTest {
     @Autowired
     private StockRepository stockRepository;
 
-    private Long testId = 1L;
-
-    @BeforeEach
-    void setUp() {
-
-        Stock stock = Stock.builder()
-                .productId(1L)
-                .quantity(100L)
-                .build();
-
-        stockRepository.save(stock);
-
-        testId = stock.getId();
-
-        System.out.println("testId = " + testId);
+    @AfterEach
+    void tearDown() {
+        stockRepository.deleteAllInBatch();
     }
 
     // 기능 테스트
-    @Transactional
     @Test
     void decreaseStock() {
 
-        stockService.decreaseStock(testId, 10L);
+        // given
+        Stock given = Stock.builder()
+                .productId(99L)
+                .quantity(50L)
+                .build();
+        stockRepository.save(given);
 
-        Stock stock = stockRepository.findById(testId).orElseThrow();
+        // when
+        stockService.decreaseStock(given.getId(), 10L);
 
-        assertEquals(90L, stock.getQuantity());
+        // then
+        Stock result = stockRepository.findById(given.getId()).orElseThrow();
+
+        assertThat(result.getProductId()).isEqualTo(given.getProductId());
+        assertThat(result.getQuantity()).isEqualTo(given.getQuantity() - 10L);
     }
 
     // 동시성 문제 발생
     @Test
     void concurrencyTest() throws InterruptedException {
 
+        // given
+        Stock given = Stock.builder()
+                .productId(99L)
+                .quantity(100L)
+                .build();
+        stockRepository.save(given);
+
+        // when
         Thread thread1 = new Thread(() -> {
-            stockService.decreaseStock(testId, 10L);
+            stockService.decreaseStock(given.getId(), 10L);
         });
 
         Thread thread2 = new Thread(() -> {
-            stockService.decreaseStock(testId, 10L);
+            stockService.decreaseStock(given.getId(), 10L);
         });
 
         thread1.start();
@@ -71,12 +77,13 @@ class StockServiceTest {
         thread1.join();
         thread2.join();
 
-        Stock stock = stockRepository.findById(testId).orElseThrow();
+        // then
+        Stock result = stockRepository.findById(given.getId()).orElseThrow();
 
-        System.out.println("stock.getQuantity() = " + stock.getQuantity());
+        System.out.println("stock.getQuantity() = " + result.getQuantity());
 
         Assertions.assertThatThrownBy(() -> {
-            assertEquals(80L, stock.getQuantity());
+            assertEquals(80L, result.getQuantity());
         }).isInstanceOf(AssertionError.class);
 
     }
@@ -85,15 +92,24 @@ class StockServiceTest {
     @Test
     void concurrencyTestByThread100() {
 
+        // given
+        Stock given = Stock.builder()
+                .productId(99L)
+                .quantity(100L)
+                .build();
+        stockRepository.save(given);
+
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
 
-        for(int i = 0; i < threadCount; i++) {
+
+        // when
+        for (int i = 0; i < threadCount; i++) {
             executorService.execute(() -> {
                 try {
-                    stockService.decreaseStock(testId, 1L);
-                }finally {
+                    stockService.decreaseStock(given.getId(), 1L);
+                } finally {
                     countDownLatch.countDown();
                 }
             });
@@ -105,12 +121,13 @@ class StockServiceTest {
             e.printStackTrace();
         }
 
-        Stock stock = stockRepository.findById(testId).orElseThrow();
+        // then
+        Stock result = stockRepository.findById(given.getId()).orElseThrow();
 
-        System.out.println("stock.getQuantity() = " + stock.getQuantity());
+        System.out.println("stock.getQuantity() = " + result.getQuantity());
 
         Assertions.assertThatThrownBy(() -> {
-            Assertions.assertThat(stock.getQuantity()).isEqualTo(0L);
+            assertThat(result.getQuantity()).isEqualTo(0L);
         }).isInstanceOf(AssertionError.class);
     }
 }
