@@ -3,7 +3,6 @@ package dev.practice.stock.service;
 import dev.practice.stock.domain.Stock;
 import dev.practice.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,30 +23,23 @@ class StockServiceWithSynchronizedTest {
     @Autowired
     private StockRepository stockRepository;
 
-    private Long testId = 1L;
-
-    @BeforeEach
-    void setUp() {
-
-        Stock stock = Stock.builder()
-                .productId(1L)
-                .quantity(100L)
-                .build();
-
-        stockRepository.save(stock);
-
-        testId = stock.getId();
-    }
 
     // 기능 테스트
-    @Transactional
     @Test
     void decreaseStock() {
 
-        stockServiceWithSynchronized.decreaseStock(testId, 10L);
+        // given
+        Stock given = Stock.builder()
+                .productId(99L)
+                .quantity(100L)
+                .build();
+        stockRepository.save(given);
 
-        Stock stock = stockRepository.findById(testId).orElseThrow();
+        // when
+        stockServiceWithSynchronized.decreaseStock(given.getId(), 10L);
 
+        // then
+        Stock stock = stockRepository.findById(given.getId()).orElseThrow();
         assertEquals(90L, stock.getQuantity());
     }
 
@@ -55,14 +47,22 @@ class StockServiceWithSynchronizedTest {
     @Test
     void concurrencyTestByThread100() {
 
+        // given
+        Stock given = Stock.builder()
+                .productId(99L)
+                .quantity(100L)
+                .build();
+        stockRepository.save(given);
+
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
 
+        // when
         for (int i = 0; i < threadCount; i++) {
             executorService.execute(() -> {
                 try {
-                    stockServiceWithSynchronized.decreaseStock(testId, 1L);
+                    stockServiceWithSynchronized.decreaseStock(given.getId(), 1L);
                 } finally {
                     countDownLatch.countDown();
                 }
@@ -75,7 +75,8 @@ class StockServiceWithSynchronizedTest {
             e.printStackTrace();
         }
 
-        Stock stock = stockRepository.findById(testId).orElseThrow();
+        // then
+        Stock stock = stockRepository.findById(given.getId()).orElseThrow();
 
         System.out.println("stock.getQuantity() = " + stock.getQuantity());
 
