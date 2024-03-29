@@ -3,6 +3,7 @@ package dev.practice.stock.service;
 import dev.practice.stock.domain.Stock;
 import dev.practice.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,10 @@ class StockServiceWithSynchronizedTest {
     @Autowired
     private StockRepository stockRepository;
 
+    @AfterEach
+    void tearDown() {
+        stockRepository.deleteAllInBatch();
+    }
 
     // 기능 테스트
     @Test

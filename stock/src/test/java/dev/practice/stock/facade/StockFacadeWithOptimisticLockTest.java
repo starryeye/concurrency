@@ -3,6 +3,7 @@ package dev.practice.stock.facade;
 import dev.practice.stock.domain.StockWithVersion;
 import dev.practice.stock.repository.StockRepositoryWithOptimisticLock;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ class StockFacadeWithOptimisticLockTest {
 
 
         System.out.println("testId = " + testId);
+    }
+
+    @AfterEach
+    void tearDown() {
+        stockRepositoryWithOptimisticLock.deleteAllInBatch();
     }
 
     // 기능 테스트

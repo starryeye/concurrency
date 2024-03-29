@@ -3,6 +3,7 @@ package dev.practice.stock.facade;
 import dev.practice.stock.domain.Stock;
 import dev.practice.stock.repository.StockRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ class StockFacadeWithNamedLockTest {
         testId = stock.getId();
 
         System.out.println("testId = " + testId);
+    }
+
+    @AfterEach
+    void tearDown() {
+        stockRepository.deleteAllInBatch();
     }
 
     // 기능 테스트
