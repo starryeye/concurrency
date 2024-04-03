@@ -39,4 +39,30 @@ public class StockServiceWithSynchronized {
 
         stockRepository.saveAndFlush(stock);
     }
+    /**
+     * synchronized 사용 2 가지
+     *
+     * 메서드에 synchronized
+     * 해당 메서드가 속한 객체의 인스턴스를 락으로 사용한다.
+     * 같은 인스턴스의 다른 synchronized 메서드는 동일한 락을 사용하기 때문에,
+     * 한 스레드 A 가 어떤 synchronized 메서드를 실행하고 있고,
+     * 다른 스레드 B 가 동일한 인스턴스의 다른 synchronized 메서드를 호출하면..
+     * A 스레드가 메소드 실행을 완료하고 락을 해제할 때까지 대기해야 한다.
+     *
+     * 블럭에 synchronized
+     * synchronized 블록을 사용하면 더 세밀한 동기화 제어를 할 수 있다.
+     * 지정된 객체를 락으로 사용하는 것이다.
+     * - synchronized(this) { /락 내부/ }
+     * 이렇게 하면, 해당 인스턴스를 락으로 사용하는 것이다. (메서드에 synchronized 된 것과 동일한 묶음이 된다.)
+     *
+     * 참고
+     * static 메서드에 synchronized 를 하면, 해당 클래스의 "Class" 인스턴스가 락으로 사용되는 것이다.
+     * static 메서드 끼리 락이 걸리는 것이다.
+     *
+     * 참고
+     * synchronized 블럭에서 락을 this 로 하지 않고 다른 인스턴스로 잡아서 별도의 락 객체를 만들어 줄 수 도 있다.
+     *
+     * 참고
+     * 변수에 대해 synchronized 하고 싶으면 wrapping 객체를 만들고 해당 변수에 접근하는 모든 메서드를 synchronized 해보자..
+     */
 }
