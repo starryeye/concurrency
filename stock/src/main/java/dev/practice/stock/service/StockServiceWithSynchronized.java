@@ -42,14 +42,14 @@ public class StockServiceWithSynchronized {
     /**
      * synchronized 사용 2 가지
      *
-     * 메서드에 synchronized
+     * 1. 메서드에 synchronized
      * 해당 메서드가 속한 객체의 인스턴스를 락으로 사용한다.
      * 같은 인스턴스의 다른 synchronized 메서드는 동일한 락을 사용하기 때문에,
      * 한 스레드 A 가 어떤 synchronized 메서드를 실행하고 있고,
      * 다른 스레드 B 가 동일한 인스턴스의 다른 synchronized 메서드를 호출하면..
      * A 스레드가 메소드 실행을 완료하고 락을 해제할 때까지 대기해야 한다.
      *
-     * 블럭에 synchronized
+     * 2. 블럭에 synchronized
      * synchronized 블록을 사용하면 더 세밀한 동기화 제어를 할 수 있다.
      * 지정된 객체를 락으로 사용하는 것이다.
      * - synchronized(this) { /락 내부/ }
